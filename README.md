@@ -14,11 +14,11 @@ pathway and see what the loss was worth.
 
 In a connectome-constrained model you can. This repository does that.
 
-**The short answer.** The index tracks decodability (pooled *r* = +0.93 over three
-independently trained networks), it keeps tracking it when lesion dose is held
-constant, and, in the test that actually needed the ground truth, it **fires on
-damage that costs decodability and stays quiet on damage of the same size that
-doesn't**.
+**The short answer.** The index tracks decodability (combined *r* = +0.96 over three
+independently trained networks, 45 independent lesions), it keeps tracking it when
+lesion dose is partialled out, and, in the test that actually needed the ground
+truth, it **fires on damage that costs decodability and stays quiet on damage of
+the same size that doesn't**.
 
 ---
 
@@ -49,25 +49,30 @@ in step (ρ = +0.93 against the geometry-independent decoder). The index is *not
 merely a restatement of the Riemannian decoder; the geometry-independent one
 agrees at least as well.
 
-### 2. Under circuit damage, at fixed dose
+### 2. Under circuit damage, and not because of the dose
 
 ![damage](figures/02_damage_axis.png)
 
-Deleting 0-25 % of pathways at a non-saturated operating point: *r* = +0.90 overall.
-The control that matters is on the right: recomputing the correlation **within each
-lesion dose**, where the amount of damage is identical and only *which* pathways
-were cut differs. Significant at every dose. The index is not tracking the dose; it
-is tracking what a particular pattern of damage destroyed.
+Deleting 0-25 % of pathways at a non-saturated operating point. The unit of
+analysis is one lesion, with its three observation-noise draws averaged, giving 15
+independent lesions per network: *r* = +0.939 for this one.
 
-Variation across *which* pathways were cut (SD 0.27) exceeds variation across *how
-many* (SD 0.20).
+The control that matters is on the right. Dose by itself predicts κ only weakly
+(*r* = -0.34, p = 0.22, not significant), and the **partial correlation with dose
+removed is +0.934** (p = 1.1e-06, df = 12), essentially unchanged. The index is not
+tracking how much was cut; it is tracking what that particular cut destroyed.
+
+Variation in κ across *which* pathways were cut (SD 0.27) exceeds variation across
+*how many* (SD 0.20).
 
 ### 3. It replicates across the ensemble
 
 ![ensemble](figures/03_ensemble_replication.png)
 
 Three independently trained networks. Pooled *r* = +0.934, ρ = +0.950 (n = 144),
-and **15 of 15 within-dose tests significant**.
+Partial correlations with dose removed are +0.934, +0.966 and +0.957, each
+p < 2e-06 at df = 12, so the relationship is not a dose-response artifact in any of
+the three.
 
 ### 4. Specificity: it does not fire on damage that costs nothing
 
@@ -77,8 +82,20 @@ Anatomically targeted lesions (cut everything onto T4; onto T5; the canonical
 Mi1/Tm3/Mi4/Mi9 → T4 motion inputs; all photoreceptor output) each compared against
 **three random lesions of exactly the same size**.
 
-Seven targeted sets landed below every one of their matched random controls; the
-index flagged 7/7. Three did not; the index flagged 0/3. **Agreement 10/10.**
+Ten comparisons, and the index's verdict matched the decoder's on all ten. But two
+of the ten are **sanity checks, not tests**: cutting all photoreceptor output in a
+visual task, and cutting all input to both direction-selective families in a motion
+task, are guaranteed to be destructive, and a measure that missed them would simply
+be broken.
+
+The six informative comparisons are `onto T4`, `onto T5` and `T4 canonical input`
+in each of two networks. Of those, the decoder says three were destructive and
+three were not, and **the index called all six correctly, 6/6**. Under an exact
+null where the index must pick which three of six to flag, that is
+p = 1/C(6,3) = **0.05**. A weaker number than 10/10 would suggest, and the honest
+one. The balance is what makes it worth anything: three positives and three
+negatives means the result rests on the index saying **no**, not only on it saying
+yes.
 
 The clearest single case: cutting 35 pathways onto T5 in model 001 leaves κ at
 0.993 (intact 0.993) and the index at 1.760 (intact 1.757). Thirty-five pathways
@@ -122,6 +139,16 @@ behaviourally that zeroing `R1 → L1` moved L1 most. That passed on one model a
 *falsely failed* on another, because L1 is driven by R1-R6. It was replaced with a
 structural check: the sign vector implied by our grouping must equal flyvis's own
 `edges_sign`, 604/604, with a shuffled-order control that must fail.
+
+A third, after this repository was first published: the damage and ensemble
+results were analysed as though every row were an independent observation. They
+are not. Each lesion was measured under three observation-noise draws, so a
+correlation computed on all rows, and the per-dose tests built on them, counted
+three measurements of one lesion as three lesions. Reanalysed on independent
+lesions with dose partialled out, the relationship is stronger rather than weaker
+(*r* = +0.934 to +0.966 per model, each p < 2e-06), so the correction cost nothing
+except a claim that should never have been phrased as "15 of 15 tests". `docs/LOG.md`
+§5 carries the detail.
 
 ## What this does not establish
 

@@ -129,19 +129,29 @@ the operating point for everything after.
 
 `code/05_damage_axis.py` · `figures/02_damage_axis.png` · `results/step4_fine.csv`
 
-0-25 % of the 604 pathways deleted, 3 lesion seeds × 3 noise seeds, 48 conditions,
-**0 at ceiling**. Overall *r* = +0.900 against the geometry-independent decoder.
+0-25 % of the 604 pathways deleted, 3 lesion seeds × 3 noise seeds, 48 rows,
+**0 at ceiling**.
 
-The control that matters, recomputed **within each lesion dose**: damage amount
-identical, only *which* pathways differ:
+**A correction to how this was first analysed.** The original version treated all
+48 rows as independent and reported a correlation within each lesion dose,
+"significant at every dose". Those 48 rows are 16 lesions each measured under 3
+observation-noise draws, so the three draws of one lesion are not independent
+observations, and an n = 9 p-value inside a dose treats them as if they were. That
+is pseudo-replication, and two visible symptoms followed from it: the per-dose
+result held under Pearson but was 14/15 under Spearman, and only 9 of 15 survived
+a Bonferroni correction the 15 tests needed and never got.
 
-| dose | 0 % | 5 % | 10 % | 15 % | 20 % | 25 % |
-|---|---|---|---|---|---|---|
-| r | +1.00 | +0.97 | +0.96 | +0.75 | +0.80 | +0.79 |
+The unit of analysis is now **one lesion**, with its noise draws averaged: 15
+independent lesions per model. For this model, *r* = **+0.939** (p = 2.2e-07).
 
-Significant at every dose. Variation in κ across lesion *seeds* within a dose
-(SD 0.268) exceeds variation across *doses* (SD 0.203): which pathways were cut
-matters more than how many.
+Dose is then removed properly rather than by stratifying into cells of three.
+Dose alone predicts κ weakly and not significantly (*r* = -0.339, p = 0.22), and
+the partial correlation holding dose constant is **+0.934** (p = 1.1e-06, df = 12),
+essentially identical to the raw value. The stronger claim survives the stricter
+analysis.
+
+Variation in κ across lesion *seeds* within a dose (SD 0.268) exceeds variation
+across *doses* (SD 0.203): which pathways were cut matters more than how many.
 
 ---
 
@@ -158,7 +168,20 @@ Three independently trained networks, same protocol, readout re-derived per mode
 | 002 | 0.800 | +0.945 | +0.919 |
 | pooled (n = 144) | n/a | **+0.934** | **+0.950** |
 
-**15 of 15 within-dose tests significant.**
+Those per-model values are computed on all 63 rows each and are therefore
+pseudo-replicated in the same way as §5. On **independent lesions** (noise draws
+averaged, 15 per model) the numbers are:
+
+| model | n | r | p | partial r, dose removed | p |
+|---|---|---|---|---|---|
+| 000 | 15 | +0.939 | 2.2e-07 | **+0.934** | 1.1e-06 |
+| 001 | 15 | +0.964 | 7.0e-09 | **+0.966** | 1.9e-08 |
+| 002 | 15 | +0.962 | 1.1e-08 | **+0.957** | 8.0e-08 |
+
+Fisher-z combined across the three models: *r* = **+0.956**, 95 % CI
+[+0.918, +0.977]. Three tests rather than fifteen, each far past any correction
+those three would need, and dose removed by partialling rather than by splitting
+into cells of three.
 
 A protocol finding worth recording: the SNR operating point does **not** transfer.
 At the same SNR = 1.0, intact κ was 0.770 / 0.993 / 0.800; model 001 is markedly
@@ -206,8 +229,29 @@ the same size:
 | 001 | ← photoreceptor | 44 | 0.478 | 0.030 | 0.812 | yes | yes |
 | 001 | → T4+T5 | 79 | 0.737 | 0.363 | 0.825 | yes | yes |
 
-Seven hurt; the index flagged 7/7. Three did not; the index flagged 0/3.
-**Agreement 10/10.** Pooled across all 126 conditions, *r* = +0.846, ρ = +0.921.
+Seven hurt; the index flagged 7/7. Three did not; the index flagged 0/3, ten out
+of ten.
+
+**How much of that is a real test.** Two of the ten are sanity checks rather than
+tests. Cutting all photoreceptor output in a visual task, and cutting all input to
+both direction-selective families in a motion task, are destructive by
+construction; a measure that missed them would be broken, and catching them is not
+evidence of discrimination. Dropping those leaves six informative comparisons:
+`onto T4`, `onto T5` and `T4 canonical input` in each of two models. The decoder
+calls three of the six destructive and three not, and the index calls all six the
+same way. Under an exact null where the index must choose which three of six to
+flag, p = 1/C(6,3) = **0.05**.
+
+A second deflation: the index and the decoder are already strongly correlated
+inside each four-point comparison set (mean Spearman +0.881, and exactly +1.00 in
+5 of the 10 sets), so agreement on "is the targeted point the lowest" is partly
+entailed by §5 and §6 rather than independent of them. The reason the six-way
+result is still worth stating is its balance: three positives and three negatives
+means it rests on the index correctly saying **no**, which a pure sensitivity
+result never shows.
+
+Pooled across all 126 rows, *r* = +0.846, ρ = +0.921, with the same
+pseudo-replication caveat as §5 and §6.
 
 **What is not claimed.** Which pathways matter is model-dependent: `onto_T4` is
 below all randoms in one network and inside the random range in the other. Two
