@@ -78,9 +78,9 @@ relationship is not a dose-response artifact in any of the three.
 
 The figure this section used before the third correction, *r* = +0.934 and
 ρ = +0.950 across all 144 rows, is kept in `docs/LOG.md` §6 so the two analyses can
-be compared. It is not a result: those 144 rows are 48 lesions each measured under
-three observation-noise draws, which is precisely the unit the correction
-disowns.
+be compared. It is not a result: those 144 rows are 45 lesions and 3 intact
+conditions, each measured under three observation-noise draws, which is precisely
+the unit the correction disowns.
 
 The three models differ substantially in their means (mean index 0.749 / 1.011 /
 0.643; mean κ 0.343 / 0.580 / 0.297), which is exactly the setup in which a pooled
