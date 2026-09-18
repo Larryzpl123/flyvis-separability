@@ -151,7 +151,12 @@ essentially identical to the raw value. The stronger claim survives the stricter
 analysis.
 
 Variation in κ across lesion *seeds* within a dose (SD 0.268) exceeds variation
-across *doses* (SD 0.203): which pathways were cut matters more than how many.
+across *doses* (SD 0.116) by 2.3x: which pathways were cut matters more than how
+many. Both SDs use lesioned doses only. An earlier version quoted 0.203 for the
+second, which included the intact condition as a sixth "dose"; the 0 % to 5 % step
+inflates that figure, and the comparison side cannot include intact at all, since
+intact has no lesion seed. The like-for-like ratio is the larger one, so this
+correction strengthens the claim, which is not why it was made.
 
 ---
 
@@ -178,10 +183,20 @@ averaged, 15 per model) the numbers are:
 | 001 | 15 | +0.964 | 7.0e-09 | **+0.966** | 1.9e-08 |
 | 002 | 15 | +0.962 | 1.1e-08 | **+0.957** | 8.0e-08 |
 
-Fisher-z combined across the three models: *r* = **+0.956**, 95 % CI
-[+0.918, +0.977]. Three tests rather than fifteen, each far past any correction
-those three would need, and dose removed by partialling rather than by splitting
-into cells of three.
+Three tests rather than fifteen, each far past any correction those three would
+need, and dose removed by partialling rather than by splitting into cells of three.
+
+Combining them into a single figure depends on the rule used, so the rule is
+named: **Fisher-z averaged, *r* = +0.956, 95 % CI [+0.918, +0.977]**. Pooling all
+45 lesions directly gives +0.954 and the arithmetic mean of the three gives +0.955.
+A reader who recomputes by direct pooling will land on +0.95, not +0.96, which is
+why the rule is stated rather than left implicit.
+
+**Simpson check.** The three models differ in level (mean index 0.749 / 1.011 /
+0.643; mean κ 0.343 / 0.580 / 0.297), so a pooled correlation could in principle be
+carried by between-model differences rather than within-model structure. Centring
+each model on its own means gives *r* = **+0.948** (p = 4.6e-23) against +0.954 for
+the naive pool, a difference of 0.005. The relationship is within-model.
 
 A protocol finding worth recording: the SNR operating point does **not** transfer.
 At the same SNR = 1.0, intact κ was 0.770 / 0.993 / 0.800; model 001 is markedly

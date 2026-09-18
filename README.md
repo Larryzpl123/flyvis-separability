@@ -14,9 +14,9 @@ pathway and see what the loss was worth.
 
 In a connectome-constrained model you can. This repository does that.
 
-**The short answer.** The index tracks decodability (combined *r* = +0.96 over three
-independently trained networks, 45 independent lesions), it keeps tracking it when
-lesion dose is partialled out, and, in the test that actually needed the ground
+**The short answer.** The index tracks decodability (*r* = +0.939, +0.964 and +0.962
+in three independently trained networks, 45 independent lesions), it keeps tracking
+it when lesion dose is partialled out, and, in the test that actually needed the ground
 truth, it **fires on damage that costs decodability and stays quiet on damage of
 the same size that doesn't**.
 
@@ -62,8 +62,10 @@ The control that matters is on the right. Dose by itself predicts κ only weakly
 removed is +0.934** (p = 1.1e-06, df = 12), essentially unchanged. The index is not
 tracking how much was cut; it is tracking what that particular cut destroyed.
 
-Variation in κ across *which* pathways were cut (SD 0.27) exceeds variation across
-*how many* (SD 0.20).
+Variation in κ across *which* pathways were cut (SD 0.268) exceeds variation across
+*how many* (SD 0.116) by a factor of 2.3. Both are computed on lesioned doses only:
+the intact condition has no lesion seed, so including it on the "how many" side
+alone, which inflates that figure to 0.203, would compare two different bases.
 
 ### 3. It replicates across the ensemble
 
@@ -73,6 +75,17 @@ Three independently trained networks. Pooled *r* = +0.934, ρ = +0.950 (n = 144)
 Partial correlations with dose removed are +0.934, +0.966 and +0.957, each
 p < 2e-06 at df = 12, so the relationship is not a dose-response artifact in any of
 the three.
+
+The three models differ substantially in their means (mean index 0.749 / 1.011 /
+0.643; mean κ 0.343 / 0.580 / 0.297), which is exactly the setup in which a pooled
+correlation can be manufactured by between-group differences rather than
+within-group structure. It is not: centring each model on its own means leaves
+*r* = +0.948, against +0.954 for the naive pool.
+
+Combining the three into one number is reported here as Fisher-z averaged,
+*r* = +0.956, 95 % CI [+0.918, +0.977]. Pooling the 45 lesions directly instead
+gives +0.954; the two agree, but the rule matters enough to name, and the
+per-model values above are the primary result.
 
 ### 4. Specificity: it does not fire on damage that costs nothing
 
